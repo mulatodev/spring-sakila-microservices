@@ -1,1 +1,1 @@
-# spring-salika-microservices
+# spring-sakila-microservices
