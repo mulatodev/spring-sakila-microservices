@@ -1,20 +1,31 @@
 package com.arcadia.samples.sakila.payment.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
 import java.util.Date;
 import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
+import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
+import org.springframework.core.style.ToStringCreator;
 
 /**
  *
  * @author ganaranjo
- * SMALLINT --> Short
- * TINYINT --> Byte
- * VARCHAR --> String
- * DATETIME --> Java.util.Date
- * TIMESTAMP --> Java.sql.Timestamp
  */
+@Entity
+@Table(name = "rental")
 public class Rental {
     
     @Id
@@ -39,8 +50,8 @@ public class Rental {
     @Column(name = "last_update")
     private Timestamp lastUpdate;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = fetchType.EAGER, mappedBy = "rental")
-    private Set<Payment> payments
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "rental")
+    private Set<Payment> payments;
     
     public Integer getRentalId() {
         return rentalId;
@@ -106,14 +117,27 @@ public class Rental {
     }
     
     public List<Payment> getPayments(){
-        final List<Payment> sortedPayments = new ArrayList<>(getInternalPets());
-        PropertyComparator.sort(sortedPayments, new MutableSortedDefinition("name", true, true));
-        return unmodifiableList(sortedPayments);
+        final List<Payment> sortedPayments = new ArrayList<>(getPaymentsInternal());
+        PropertyComparator.sort(sortedPayments, new MutableSortDefinition("name", true, true));
+        return Collections.unmodifiableList(sortedPayments);
     }
     
     public void addPayment(Payment payment){
-        getInternamPayments().add(payment);
-        payment.setOwner(this);
+        getPaymentsInternal().add(payment);
+        payment.setRental(this);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringCreator(this)
+            .append("rentalId", this.getRentalId())
+            .append("rentalDate", this.getRentalDate())
+            .append("inventoryId", this.getInventoryId())
+            .append("customerId", this.getCustomerId())
+            .append("returnDate", this.getReturnDate())
+            .append("staffId", this.getStaffId())
+            .append("lastUpdate", this.getLastUpdate())
+            .toString();
     }
     
 }
