@@ -1,14 +1,31 @@
 package com.arcadia.samples.sakila.payment.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PropertyComparator;
+import org.springframework.core.style.ToStringCreator;
 
 /**
  *
  * @author ganaranjo
 */
+@Entity
+@Table(name = "customer")
 public class Customer {
 
     @Id
@@ -39,6 +56,9 @@ public class Customer {
     @Column(name = "last_update")
     private Timestamp lastUpdate;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "customer")
+    private Set<Payment> payments;
+ 
     public Short getCustomerId() {
         return customerId;
     }
@@ -110,4 +130,38 @@ public class Customer {
     public void setLastUpdate(Timestamp lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
+    
+    protected Set<Payment> getPaymentsInternal(){
+        if (this.payments == null) {
+            this.payments = new HashSet<>();
+        }
+        return this.payments;
+    }
+    
+    public List<Payment> getPayments(){
+        final List<Payment> sortedPayments = new ArrayList<>(getPaymentsInternal());
+        PropertyComparator.sort(sortedPayments, new MutableSortDefinition("name", true, true));
+        return Collections.unmodifiableList(sortedPayments);
+    }
+    
+    public void addPayment(Payment payment){
+        getPaymentsInternal().add(payment);
+        payment.setCustomer(this);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringCreator(this)
+            .append("customerId", this.getCustomerId())
+            .append("storeId", this.getStoreId())
+            .append("firstName", this.getFirstName())
+            .append("lastName", this.getLastName())
+            .append("email", this.getEmail())
+            .append("addressId", this.getAddressId())
+            .append("active", this.getActive())
+            .append("createDate", this.getCreateDate())
+            .append("lastUpdate", this.getLastUpdate())
+            .toString();
+    }
+    
 }
