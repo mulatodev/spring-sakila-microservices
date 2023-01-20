@@ -7,6 +7,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 /**
  *
@@ -24,7 +26,7 @@ public class Customer {
     
     @ManyToOne
     @JoinColumn(name = "store_id")
-    private StoreTypeTable store_id;
+    private Store store;
     
     @Column(name = "first_name")
     private String first_name;
@@ -37,7 +39,7 @@ public class Customer {
     
     @ManyToOne
     @JoinColumn(name = "address_id")
-    private AddressTypeTable address_id;
+    private Address address;
     
     @Column(name = "active")
     private Byte active;
@@ -47,12 +49,6 @@ public class Customer {
     
     @Column(name = "last_update")
     private Timestamp last_update;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "customer")
-    private Set<Rental> rentals;
-    
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "customer")
-    private Set<Payment> payments;
     
     public Short getCustomer_id() {
         return customer_id;
@@ -62,12 +58,12 @@ public class Customer {
         this.customer_id = customer_id;
     }
 
-    public Byte getStore_id() {
-        return store_id;
+    public Store getStore_id() {
+        return store;
     }
 
-    public void setStore_id(Byte store_id) {
-        this.store_id = store_id;
+    public void setStore(Store store) {
+        this.store = store;
     }
 
     public String getFirst_name() {
@@ -94,12 +90,12 @@ public class Customer {
         this.email = email;
     }
 
-    public Short getAddress_id() {
-        return address_id;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setAddress_id(Short address_id) {
-        this.address_id = address_id;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public Byte getActive() {

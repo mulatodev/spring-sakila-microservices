@@ -7,11 +7,6 @@ import java.sql.Timestamp;
 /**
  *
  * @author ganaranjo
- * SMALLINT --> Short
- * TINYINT --> Byte
- * VARCHAR --> String
- * DATETIME --> Java.util.Date
- * TIMESTAMP --> Java.sql.Timestamp
  */
 public class Staff {
     
