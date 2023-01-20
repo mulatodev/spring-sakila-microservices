@@ -1,9 +1,11 @@
 package com.arcadia.samples.sakila.payment.model;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 import java.util.Date;
 import java.sql.Timestamp;
@@ -14,7 +16,8 @@ import org.springframework.core.style.ToStringCreator;
  *
  * @author ganaranjo
  */
-
+@Entity
+@Table(name = "payment")
 public class Payment {
 
     @Id
@@ -99,12 +102,15 @@ public class Payment {
         this.lastUpdate = lastUpdate;
     }
     
+    @Override
     public String toString(){
         return new ToStringCreator(this)
                 .append("id", this.getPaymentId())
-                .append("customerId", this.customer.getCustomerId())
-                .append("staffId", this.staff.getStaffId())
-                .append("rentalId", this.rental.getRentalId())
+                .append("customerFirstName", this.customer.getFirstName())
+                .append("customerLastName", this.customer.getLastName())
+                .append("staffFirstName", this.staff.getFirstName())
+                .append("staffLastName", this.staff.getLastName())
+                .append("rentalDate", this.rental.getRentalDate())
                 .append("amount", this.getAmount())
                 .append("paymentDate", this.getPaymentDate())
                 .append("lastUpdate", this.getLastUpdate())
